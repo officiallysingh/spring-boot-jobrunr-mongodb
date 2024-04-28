@@ -1,0 +1,36 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+      file: spring-boot-jobrunr-demo/compose.yml
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+problem:
+  type-url: http://localhost:8080/problems/help.html
+  debug-enabled: false
+  stacktrace-enabled: false
+  cause-chains-enabled: false
+
+#server:
+  #  port: 8080
+  #servlet:
+  #context-path:
+
+logging:
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+  file:
+    path: logs
+    name: ${logging.file.path}/application.log
+  level:
+    ROOT: info
+debug: false
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+        

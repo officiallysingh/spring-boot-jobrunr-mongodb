@@ -7,8 +7,4 @@ public interface SchedulerService {
   void doSimpleJob(String anArgument);
 
   void doRecurringJob();
-
-  void doLongRunningJob(String anArgument);
-
-  void doLongRunningJobWithJobContext(String anArgument, JobContext jobContext);
 }

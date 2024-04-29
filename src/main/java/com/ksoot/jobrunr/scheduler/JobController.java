@@ -73,8 +73,8 @@ public class JobController {
       produces = {MediaType.TEXT_PLAIN_VALUE})
   public String longRunningJob(@RequestParam(defaultValue = "World") String name) {
     final JobId enqueuedJobId =
-        jobScheduler.<SchedulerService>enqueue(
-            myService -> schedulerService.doLongRunningJob("Hello " + name));
+        jobScheduler.<SchedulerServiceImpl>enqueue(
+            myService -> ((SchedulerServiceImpl)schedulerService).doLongRunningJob("Hello " + name));
     return "Job Enqueued: " + enqueuedJobId;
   }
 
@@ -83,7 +83,7 @@ public class JobController {
       produces = {MediaType.TEXT_PLAIN_VALUE})
   public String longRunningJobWithJobContext(@RequestParam(defaultValue = "World") String name) {
     final JobId enqueuedJobId =
-        jobScheduler.<SchedulerService>enqueue(
+        jobScheduler.<SchedulerServiceImpl>enqueue(
             schedulerService ->
                 schedulerService.doLongRunningJobWithJobContext("Hello " + name, JobContext.Null));
     return "Job Enqueued: " + enqueuedJobId;

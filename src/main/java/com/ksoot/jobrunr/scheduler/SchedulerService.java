@@ -4,7 +4,11 @@ import org.jobrunr.jobs.context.JobContext;
 
 public interface SchedulerService {
 
-  void doSimpleJob(String anArgument);
+    void doSimpleJob(String anArgument);
 
-  void doRecurringJob();
+    void doRecurringJob();
+
+    void doLongRunningJob(String anArgument);
+
+    void doLongRunningJobWithJobContext(String anArgument, JobContext jobContext);
 }

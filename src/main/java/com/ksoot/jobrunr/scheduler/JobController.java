@@ -42,8 +42,8 @@ public class JobController {
       produces = {MediaType.TEXT_PLAIN_VALUE})
   public String simpleJob(@RequestParam(defaultValue = "World") String name) {
     final JobId enqueuedJobId =
-        jobScheduler.<SchedulerService>enqueue(
-            myService -> schedulerService.doSimpleJob("Hello " + name));
+            this.jobScheduler.<SchedulerService>enqueue(
+            myService -> this.schedulerService.doSimpleJob("Hello " + name));
     return "Job Enqueued: " + enqueuedJobId;
   }
 
@@ -52,7 +52,7 @@ public class JobController {
       produces = {MediaType.TEXT_PLAIN_VALUE})
   public String simpleJobUsingInstance(@RequestParam(defaultValue = "World") String name) {
     final JobId enqueuedJobId =
-        jobScheduler.enqueue(() -> schedulerService.doSimpleJob("Hello " + name));
+            this.jobScheduler.enqueue(() -> this.schedulerService.doSimpleJob("Hello " + name));
     return "Job Enqueued: " + enqueuedJobId;
   }
 
@@ -63,8 +63,8 @@ public class JobController {
       @RequestParam(defaultValue = "Hello world") String value,
       @RequestParam(defaultValue = "PT3H") String when) {
     final JobId scheduledJobId =
-        jobScheduler.schedule(
-            now().plus(Duration.parse(when)), () -> schedulerService.doSimpleJob(value));
+            this.jobScheduler.schedule(
+            now().plus(Duration.parse(when)), () -> this.schedulerService.doSimpleJob(value));
     return "Job Scheduled: " + scheduledJobId;
   }
 
@@ -73,8 +73,8 @@ public class JobController {
       produces = {MediaType.TEXT_PLAIN_VALUE})
   public String longRunningJob(@RequestParam(defaultValue = "World") String name) {
     final JobId enqueuedJobId =
-        jobScheduler.<SchedulerServiceImpl>enqueue(
-            myService -> ((SchedulerServiceImpl)schedulerService).doLongRunningJob("Hello " + name));
+            this.jobScheduler.<SchedulerService>enqueue(
+            myService -> this.schedulerService.doLongRunningJob("Hello " + name));
     return "Job Enqueued: " + enqueuedJobId;
   }
 
@@ -83,7 +83,7 @@ public class JobController {
       produces = {MediaType.TEXT_PLAIN_VALUE})
   public String longRunningJobWithJobContext(@RequestParam(defaultValue = "World") String name) {
     final JobId enqueuedJobId =
-        jobScheduler.<SchedulerServiceImpl>enqueue(
+            this.jobScheduler.<SchedulerService>enqueue(
             schedulerService ->
                 schedulerService.doLongRunningJobWithJobContext("Hello " + name, JobContext.Null));
     return "Job Enqueued: " + enqueuedJobId;
@@ -93,7 +93,17 @@ public class JobController {
       value = "/delete-job",
       produces = {MediaType.TEXT_PLAIN_VALUE})
   public String deleteJob(@RequestParam UUID jobId) {
-    jobScheduler.delete(jobId);
+    this.jobScheduler.delete(jobId);
     return "Job Deleted: " + jobId;
   }
+
+  @GetMapping(
+          value = "/recurring-job",
+          produces = {MediaType.TEXT_PLAIN_VALUE})
+  public String simpleJob(@RequestParam(defaultValue = "PT1M") Duration frequency) {
+    final String recurringJobId = this.jobScheduler.scheduleRecurrently(frequency,
+            () -> System.out.println("$$$ Recurring job with frequency of: " + frequency));
+    return "Recurring Job scheduled: " + recurringJobId + " with frequency of: " + frequency;
+  }
+
 }

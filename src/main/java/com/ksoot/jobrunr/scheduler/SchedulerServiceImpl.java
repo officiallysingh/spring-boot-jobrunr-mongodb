@@ -14,14 +14,17 @@ public class SchedulerServiceImpl implements SchedulerService {
 
   @Recurring(id = "my-recurring-job", cron = "0 0/15 * * *")
   @Job(name = "My recurring job")
+  @Override
   public void doRecurringJob() {
-    System.out.println("Doing some work without arguments");
+    System.out.println("Recurring Cron (0 0/15 * * *) job: Doing some work without arguments");
   }
 
+  @Override
   public void doSimpleJob(String anArgument) {
     System.out.println("Doing some work: " + anArgument);
   }
 
+  @Override
   public void doLongRunningJob(String anArgument) {
     try {
       for (int i = 0; i < 10; i++) {
@@ -33,6 +36,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
   }
 
+  @Override
   public void doLongRunningJobWithJobContext(String anArgument, JobContext jobContext) {
     try {
       log.warn("Starting long running job...");

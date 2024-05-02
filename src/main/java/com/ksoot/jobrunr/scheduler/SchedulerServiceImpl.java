@@ -2,9 +2,10 @@ package com.ksoot.jobrunr.scheduler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jobrunr.jobs.annotations.Job;
-import org.jobrunr.jobs.annotations.Recurring;
+//import org.jobrunr.jobs.annotations.Recurring;
 import org.jobrunr.jobs.context.JobContext;
 import org.jobrunr.jobs.context.JobDashboardProgressBar;
+import org.jobrunr.spring.annotations.Recurring;
 import org.springframework.stereotype.Component;
 
 /** This is a simple spring service */

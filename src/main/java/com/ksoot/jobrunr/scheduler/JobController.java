@@ -3,11 +3,18 @@ package com.ksoot.jobrunr.scheduler;
 import static java.time.Instant.now;
 
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jobrunr.jobs.JobId;
 import org.jobrunr.jobs.context.JobContext;
+import org.jobrunr.jobs.lambdas.JobRequest;
+import org.jobrunr.jobs.lambdas.JobRequestHandler;
+import org.jobrunr.scheduling.BackgroundJob;
+import org.jobrunr.scheduling.JobRequestScheduler;
 import org.jobrunr.scheduling.JobScheduler;
+import org.jobrunr.scheduling.RecurringJobBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/jobrunr")
 @RequiredArgsConstructor
+@Slf4j
 public class JobController {
 
   private final JobScheduler jobScheduler;
@@ -100,10 +108,21 @@ public class JobController {
   @GetMapping(
           value = "/recurring-job",
           produces = {MediaType.TEXT_PLAIN_VALUE})
-  public String simpleJob(@RequestParam(defaultValue = "PT1M") Duration frequency) {
+  public String recurringJob(@RequestParam(defaultValue = "PT1M") Duration frequency) {
     final String recurringJobId = this.jobScheduler.scheduleRecurrently(frequency,
             () -> System.out.println("$$$ Recurring job with frequency of: " + frequency));
     return "Recurring Job scheduled: " + recurringJobId + " with frequency of: " + frequency;
   }
 
+//  private final JobRequestScheduler jobRequestScheduler;
+
+  @GetMapping(
+          value = "/timestamp-job",
+          produces = {MediaType.TEXT_PLAIN_VALUE})
+  public String timestampJob(@RequestParam(defaultValue = "2024-05-02T21:10:00+05:30") OffsetDateTime timestamp) {
+    final JobId recurringJobId = this.jobScheduler.schedule(timestamp,
+            () -> System.out.println("??? One time job run at timestamp: " + OffsetDateTime.now()));
+    log.info("??? One time job scheduled at timestamp: " + timestamp);
+    return "Recurring Job scheduled: " + recurringJobId.asUUID() + " with frequency of: " + timestamp;
+  }
 }
